@@ -6,7 +6,7 @@ RUN rm -rf /usr/local/tomcat/webapps/*
 
 # Copiamos tu archivo compilado y lo nombramos ROOT.war para que sea la app principal
 # OJO: Cambia "dist/tu_proyecto.war" por la ruta y nombre real de tu archivo .war
-COPY dist/tu_proyecto.war /usr/local/tomcat/webapps/ROOT.war
+COPY dist/API_HealthBlood.war /usr/local/tomcat/webapps/ROOT.war
 
 # Exponemos el puerto de Tomcat
 EXPOSE 8080
