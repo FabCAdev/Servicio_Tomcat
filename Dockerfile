@@ -1,5 +1,5 @@
 # Usamos una imagen oficial de Tomcat 10 con Java 17
-FROM tomcat:10.1-jdk17
+FROM tomcat:10.1-jdk21
 
 # Limpiamos las aplicaciones por defecto de Tomcat
 RUN rm -rf /usr/local/tomcat/webapps/*
