@@ -7,16 +7,16 @@ public class ConnectionMysql {
     Connection conn;
     
     public Connection open() {
-        String user = "root"; // Usuario de Mysql
-        String password = "root"; // Pass de Mysql
-        String db_name = "gluco_api";
-        String url = "jdbc:mysql://127.0.0.1:3306/" + db_name;
+        // Lee las variables de entorno de Render, o usa las locales por defecto
+        String user = System.getenv("DB_USER") != null ? System.getenv("DB_USER") : "root";
+        String password = System.getenv("DB_PASS") != null ? System.getenv("DB_PASS") : "root";
+        String dbUrl = System.getenv("DB_URL") != null ? System.getenv("DB_URL") : "jdbc:mysql://127.0.0.1:3306/gluco_api";
+        
         String parametros = "?useSSL=false&useUnicode=true&characterEncoding=utf-8";
         
         try {
-            // Corrección: Class con mayúscula y forName bien escrito
             Class.forName("com.mysql.cj.jdbc.Driver");
-            conn = DriverManager.getConnection(url + parametros, user, password);
+            conn = DriverManager.getConnection(dbUrl + parametros, user, password);
             return conn;
         } catch (Exception e) {
             e.printStackTrace();
@@ -25,7 +25,6 @@ public class ConnectionMysql {
     }
 
     public void close() {
-        // Corrección: Cierre real de la conexión en lugar de lanzar una excepción
         try {
             if (conn != null && !conn.isClosed()) {
                 conn.close();
