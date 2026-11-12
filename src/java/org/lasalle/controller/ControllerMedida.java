@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import org.lasalle.model.Medida;
@@ -28,7 +29,7 @@ public class ControllerMedida {
         }
 
         try (conn;
-                PreparedStatement pstm = conn.prepareStatement(sql)) {
+             PreparedStatement pstm = conn.prepareStatement(sql)) {
 
             if (idUsuario != null) {
                 pstm.setInt(1, idUsuario);
@@ -44,6 +45,39 @@ public class ControllerMedida {
         }
 
         return lista;
+    }
+
+    public Medida save(Medida medida) throws SQLException {
+        String sql = "INSERT INTO medida (idUsuario, glucosa, fechaHora, contexto, notas) VALUES (?, ?, ?, ?, ?)";
+        
+        ConnectionMysql connMysql = new ConnectionMysql();
+        Connection conn = connMysql.open();
+        if (conn == null) {
+            throw new SQLException("No se pudo conectar a la base de datos");
+        }
+
+        try (conn; 
+             PreparedStatement pstm = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            
+            pstm.setInt(1, medida.getIdUsuario());
+            pstm.setInt(2, medida.getGlucosa());
+            pstm.setString(3, medida.getFechaHora());
+            pstm.setString(4, medida.getContexto());
+            pstm.setString(5, medida.getNotas());
+
+            if (pstm.executeUpdate() == 0) {
+                throw new SQLException("No se pudo registrar la medida");
+            }
+
+            try (ResultSet keys = pstm.getGeneratedKeys()) {
+                if (keys.next()) {
+                    medida.setIdMedida(keys.getInt(1));
+                }
+            }
+            return medida;
+        } finally {
+            connMysql.close();
+        }
     }
 
     public Medida fillMedida(ResultSet rs) throws SQLException {
