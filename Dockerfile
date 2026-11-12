@@ -8,6 +8,9 @@ RUN rm -rf /usr/local/tomcat/webapps/*
 # OJO: Cambia "dist/tu_proyecto.war" por la ruta y nombre real de tu archivo .war
 COPY dist/API_HealthBlood.war /usr/local/tomcat/webapps/ROOT.war
 
+# Desactivar el puerto de apagado para evitar error 500 en Render
+RUN sed -i 's/port="8005" shutdown="SHUTDOWN"/port="-1" shutdown="SHUTDOWN"/g' /usr/local/tomcat/conf/server.xml
+
 # Exponemos el puerto de Tomcat
 EXPOSE 8080
 
